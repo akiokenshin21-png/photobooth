@@ -1,0 +1,80 @@
+<!-- Settings.html: admin settings panel, loaded inside a modal -->
+<div class="modal-backdrop" id="settingsBackdrop">
+  <div class="modal">
+    <h3>⚙️ Settings</h3>
+
+    <div class="modal-section-title">Business</div>
+    <div class="field"><label>Business Name</label><input type="text" id="setBusinessName"></div>
+    <div class="field"><label>Address</label><input type="text" id="setAddress"></div>
+    <div class="inline-fields">
+      <div class="field"><label>Phone</label><input type="text" id="setPhone"></div>
+      <div class="field"><label>Email</label><input type="text" id="setEmail"></div>
+    </div>
+    <div class="field"><label>Logo URL</label><input type="text" id="setLogoUrl" placeholder="https://..."></div>
+    <div class="field"><label>Thank-you Message</label><input type="text" id="setThankYouMessage"></div>
+
+    <div class="modal-section-title">Photo Strip</div>
+    <div class="field"><label>Default Label</label><input type="text" id="setDefaultLabel"></div>
+    <div class="inline-fields">
+      <div class="field"><label>Number of Photos</label>
+        <select id="setNumPhotos">
+          <option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="6">6</option>
+        </select>
+      </div>
+      <div class="field"><label>Spacing (px)</label><input type="number" id="setStripSpacing"></div>
+    </div>
+    <div class="inline-fields">
+      <div class="field"><label>Width (px)</label><input type="number" id="setStripWidth"></div>
+      <div class="field"><label>Height (px)</label><input type="number" id="setStripHeight"></div>
+    </div>
+    <div class="field"><label>Background Color</label><input type="text" id="setStripBackground" placeholder="#ffffff"></div>
+    <div class="inline-fields">
+      <div class="field"><label>Font</label><input type="text" id="setLabelFont"></div>
+      <div class="field"><label>Font Size (px)</label><input type="number" id="setLabelFontSize"></div>
+    </div>
+    <div class="toggle-row"><span>Bold Label</span>
+      <label class="switch"><input type="checkbox" id="setLabelBold"><span class="slider"></span></label>
+    </div>
+    <div class="field"><label>Alignment</label>
+      <select id="setLabelAlign">
+        <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
+      </select>
+    </div>
+    <div class="toggle-row"><span>Show Date on Strip</span>
+      <label class="switch"><input type="checkbox" id="setShowDate"><span class="slider"></span></label>
+    </div>
+    <div class="toggle-row"><span>Show Transaction Number</span>
+      <label class="switch"><input type="checkbox" id="setShowTransactionNumber"><span class="slider"></span></label>
+    </div>
+
+    <div class="modal-section-title">Payment</div>
+    <div class="field"><label>Payment Provider (e.g. GCash, Maya, Bank)</label><input type="text" id="setPaymentProvider"></div>
+    <div class="field"><label>Payment Account / Name</label><input type="text" id="setPaymentAccount"></div>
+    <div class="field"><label>Payment URL / Text (auto-generates QR)</label><input type="text" id="setPaymentUrl" placeholder="e.g. gcash://pay?... or a payment link"></div>
+    <div class="field"><label>Payment QR Image URL (overrides auto QR if set)</label><input type="text" id="setPaymentQrImageUrl" placeholder="https://..."></div>
+    <div class="field"><label>Payment Instructions</label><input type="text" id="setPaymentInstructions"></div>
+
+    <div class="modal-section-title">Receipt</div>
+    <div class="inline-fields">
+      <div class="field"><label>Currency Symbol</label><input type="text" id="setCurrency"></div>
+      <div class="field"><label>Receipt Width</label>
+        <select id="setReceiptWidth">
+          <option value="58mm">58mm thermal</option>
+          <option value="80mm">80mm thermal</option>
+          <option value="a4">A4</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Footer Text</label><input type="text" id="setFooter"></div>
+    <div class="inline-fields">
+      <div class="field"><label>Default Package</label><input type="text" id="setDefaultPackage"></div>
+      <div class="field"><label>Default Price</label><input type="number" id="setDefaultPrice"></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:18px;">
+      <button class="btn btn-outline btn-block" onclick="closeSettings()">Close</button>
+      <button class="btn btn-primary btn-block" onclick="saveSettingsFromUI()">💾 Save Settings</button>
+    </div>
+  </div>
+</div>
