@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <?!= include('Styles'); ?>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">🎞️ <span id="brandName">Faithture</span></div>
+    <button class="icon-btn" title="Setting" onclick="openSettings()">⚙️</button>
+  </div>
+
+  <!-- ============ START SCREEN ============ -->
+  <div class="screen active" id="screen-start">
+    <div class="card start-hero">
+      <div class="emoji">📷</div>
+      <h1>PHOTO BOOTH</h1>
+      <p>Capture your memories</p>
+      <button class="btn btn-primary btn-lg btn-block" onclick="goToCamera()">📷 START</button>
+    </div>
+  </div>
+
+  <!-- ============ CAMERA SCREEN ============ -->
+  <div class="screen" id="screen-camera">
+    <div class="card">
+      <div class="section-title">📸 Start Capture</div>
+
+      <div class="timer-row">
+        <button class="chip timer-chip" onclick="setTimerSeconds(3,this)">⏱ 3s</button>
+        <button class="chip timer-chip active" onclick="setTimerSeconds(5,this)">⏱ 5s</button>
+        <button class="chip timer-chip" onclick="setTimerSeconds(10,this)">⏱ 10s</button>
+      </div>
+
+      <div class="timer-row">
+        <button class="chip" id="layoutSummaryChip" onclick="openGridPicker()">▦ Grid: <span id="layoutSummaryLabel">4 Photos</span></button>
+      </div>
+
+      <div class="camera-wrap" id="cameraWrap">
+        <video id="videoPreview" autoplay playsinline muted></video>
+        <div class="flash" id="flashEl"></div>
+        <div class="countdown-overlay" id="countdownOverlay">
+          <div class="countdown-number" id="countdownNumber">5</div>
+        </div>
+        <div class="camera-error" id="cameraError">
+          <div class="emoji">📷</div>
+          <div><strong>Camera access denied.</strong><br>Please allow camera access in your browser settings.</div>
+          <div class="btn-row">
+            <button class="btn btn-secondary btn-sm" onclick="retryCamera()">TRY CAMERA AGAIN</button>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()">UPLOAD PHOTO</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <button class="btn btn-primary btn-lg btn-block" onclick="startCaptureSequence()">📷 START CAPTURE</button>
+      </div>
+
+      <div class="effects-row">
+        <button class="chip" onclick="openGridPicker()">▦ GRID</button>
+        <button class="chip filter-chip active" onclick="setFilter('normal',this)">FILTERS: Normal</button>
+        <button class="chip filter-chip" onclick="setFilter('grayscale',this)">Grayscale</button>
+        <button class="chip filter-chip" onclick="setFilter('vintage',this)">Vintage</button>
+        <button class="chip filter-chip" onclick="setFilter('bright',this)">Bright</button>
+        <button class="chip filter-chip" onclick="setFilter('soft',this)">Soft</button>
+        <button class="chip filter-chip" onclick="setFilter('glow',this)">✨ GLOW</button>
+      </div>
+
+      <div class="upload-row">
+        <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">⬆ Upload Photo</button>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" multiple onchange="handleFileUpload(this)">
+      </div>
+
+      <div class="thumbs-title">Photos (<span id="photoCountLabel">0 / 4</span>)</div>
+      <div class="thumbs-grid"></div>
+
+      <div class="btn-row" style="margin-top:18px;">
+        <button class="btn btn-outline" onclick="showScreen('screen-start')">Back</button>
+        <button class="btn btn-primary" onclick="goToReview()">Next: Review Photos ▸</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ REVIEW / STRIP SCREEN ============ -->
+  <div class="screen" id="screen-review">
+    <div class="card">
+      <div class="section-title">🖼 Review &amp; Photo Strip</div>
+
+      <div class="thumbs-title">Photos (<span id="photoCountLabel2"></span>)</div>
+      <div class="thumbs-grid"></div>
+
+      <div class="field" style="margin-top:16px;">
+        <label>Photo Label</label>
+        <input type="text" id="photoLabelInput" oninput="onLabelChanged()" placeholder="Photo Booth by Aki">
+      </div>
+
+      <div class="strip-preview-wrap">
+        <img id="stripPreviewImg" alt="Photo strip preview">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="backToCameraFromReview()">◂ Retake / Add More</button>
+        <button class="btn btn-primary" onclick="goToCheckout()">Next: Checkout ▸</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CHECKOUT SCREEN ============ -->
+  <div class="screen" id="screen-checkout">
+    <div class="card">
+      <div class="section-title">🧾 Transaction Details</div>
+
+      <div class="field">
+        <label>Customer Name (optional)</label>
+        <input type="text" id="customerNameInput" placeholder="Walk-in customer">
+      </div>
+      <div class="field">
+        <label>Package</label>
+        <input type="text" id="packageInput" placeholder="Photo Booth Session">
+      </div>
+      <div class="inline-fields">
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" id="quantityInput" value="1" min="1">
+        </div>
+        <div class="field">
+          <label>Price</label>
+          <input type="number" id="priceInput" value="100" min="0">
+        </div>
+        <div class="field">
+          <label>Discount</label>
+          <input type="number" id="discountInput" value="0" min="0">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Payment Method</label>
+        <div class="pay-methods">
+          <button class="chip pay-chip active" onclick="selectPaymentMethod('CASH',this)">💵 Cash</button>
+          <button class="chip pay-chip" onclick="selectPaymentMethod('GCash',this)">📱 GCash</button>
+          <button class="chip pay-chip" onclick="selectPaymentMethod('Maya',this)">📱 Maya</button>
+          <button class="chip pay-chip" onclick="selectPaymentMethod('Bank Transfer',this)">🏦 Bank</button>
+        </div>
+        <input type="hidden" id="paymentMethodField" value="CASH">
+      </div>
+
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-outline" onclick="backToReviewFromCheckout()">◂ Back</button>
+        <button class="btn btn-dark" onclick="requestClearTransaction()">🗑 Clear</button>
+      </div>
+      <button class="btn btn-primary btn-lg btn-block" id="saveBtn" style="margin-top:12px;" onclick="saveTransactionClicked()">💾 SAVE</button>
+    </div>
+  </div>
+
+  <!-- ============ RECEIPT SCREEN ============ -->
+  <div class="screen" id="screen-receipt">
+    <div id="printArea">
+      <?!= include('Receipt'); ?>
+    </div>
+    <div class="btn-row" style="margin-top:18px;">
+      <button class="btn btn-outline btn-block" onclick="printReceipt()">🖨 Print Receipt</button>
+      <button class="btn btn-primary btn-block" onclick="startNewTransaction()">NEW TRANSACTION</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ Settings modal ============ -->
+<?!= include('Setting'); ?>
+
+<!-- ============ Grid layout picker modal ============ -->
+<?!= include('Grid'); ?>
+
+<!-- ============ Confirm Clear modal ============ -->
+<div class="modal-backdrop" id="confirmClearBackdrop">
+  <div class="modal" style="max-width:380px;">
+    <h3>Clear Transaction?</h3>
+    <p>Are you sure you want to clear this transaction? Any captured photos and entered details will be lost. Previously saved transactions will NOT be affected.</p>
+    <div class="btn-row">
+      <button class="btn btn-outline btn-block" onclick="cancelClear()">CANCEL</button>
+      <button class="btn btn-primary btn-block" onclick="confirmClear()">CLEAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Loading overlay ============ -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Saving transaction...</div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div class="toast" id="toastEl"></div>
+
+<?!= include('Scripts'); ?>
+</body>
+</html>
